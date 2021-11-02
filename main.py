@@ -1,15 +1,14 @@
 from save_to_file import save_to_hwp
 from crawling_koreantimes import get_koreantimes
 
+
 def main():
-    while True:
-        num = int(input('몇 개의 news를 가져올까요?(10개 이하)'))
-        if num > 10:
-            print('다시 입력하세요.')
-            continue
-        content_koreantimes = get_koreantimes(num)
-        save_to_hwp(content_koreantimes, 'koreatimes')
-        break
+    start = int(input("몇 페이지부터 가져올까요?"))
+    end = int(input("몇 페이지까지 가져올까요?"))
+    content_koreantimes = get_koreantimes(start, end)
+    save_to_hwp(content_koreantimes, "koreatimes", start, end)
     return
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     main()
