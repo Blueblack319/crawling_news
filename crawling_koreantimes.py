@@ -1,4 +1,7 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 import time
 
@@ -7,15 +10,19 @@ options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 
-driver = webdriver.Chrome(options=options)
+service = Service(executable_path=ChromeDriverManager().install())
+
+driver = webdriver.Chrome(service=service, options=options)
 # driver.implicitly_wait(8)
+
+category_list = ["743", "761"]
 
 
 def extract_news_urls(src):
     urls = []
     driver.get(src)
     # time.sleep(10)
-    news_list = driver.find_elements_by_class_name("list_article_area")
+    news_list = driver.find_elements(By.CLASS_NAME, "list_article_area")
     for news_element in news_list:
         url = news_element.find_element_by_css_selector(
             "div.list_article_headline.HD > a"
@@ -55,10 +62,10 @@ def extract_by_content(urls):
     return content
 
 
-def get_koreantimes(start, end):
+def get_koreantimes(start, end, category):
     contents = ""
     for page in range(start, end + 1):
-        URL = f"http://www.koreatimes.co.kr/www/sublist_743_{page}.html"
+        URL = f"http://www.koreatimes.co.kr/www/sublist_{category}_{page}.html"
         urls = extract_news_urls(URL)
         contents += extract_by_content(urls)
     driver.quit()
